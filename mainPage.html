@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 1%;
+            padding: 1%;
+            box-sizing: border-box;
+            font-family:fantasy;
+            list-style: none;
+        }
+        nav > div{
+            background-color: rgba(26, 6, 95, 0.493);
+        }
+        nav >div >ul{
+            display: flex; 
+            justify-content: space-around; 
+             align-items: center;
+             padding: 1vh 5vh;
+             font-size: 1vw;
+        }
+        nav >div >ul >li:hover {
+            color: rgb(235, 19, 48);
+        }
+        a{
+            text-decoration: none;
+            color: rgba(66, 4, 68, 0.459);
+        }
+        table{
+            border: 1px solid black;
+            width: 90vw;
+            margin: auto;
+            margin-top: 3vh;
+            text-align: center;
+        }
+        table >tbody> tr, table >thead> tr{
+            padding: 1vh;
+           
+            background-color: rgb(54, 138, 207);
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div>
+            <ul>
+                <li>Home Page</li>
+             <a href="indivisual.html">   <li>Individual Brewery Page</li></a>
+               <a href="searchPage.html"> <li>Search Page</li></a>
+            </ul>
+        </div>
+    </nav>
+    <select name="" id="" onchange="show(value)">
+        <option value="planning">planning</option>
+        <option value="micro">micro</option>
+        <option value=""></option>
+    </select>
+    <table>
+        <thead>
+            <tr>
+                <td>Name</td>
+                <td>Brewery_type</td>
+                <td>City</td>
+                <td>State</td>
+                <td>More</td>
+            </tr>
+        </thead>
+        <tbody id="tablebody">
+          
+        </tbody>
+    </table>
+</body>
+</html>
+<script>
+    let arr
+    async function all(){
+        try {
+           let res=await fetch(`https://api.openbrewerydb.org/breweries`) 
+           let data=await res.json()
+           console.log(data)
+           arr=data
+           display(data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    all()
+
+    const display =(data)=>{
+       const tbody=document.getElementById("tablebody")
+       tbody.innerHTML=``
+       data.forEach((ele) => {
+           let tr=document.createElement("tr")
+           let name=document.createElement("td")
+           name.innerHTML=ele.name
+
+           let type=document.createElement("td")
+           type.innerHTML=ele.brewery_type
+
+           let city=document.createElement("td")
+           city.innerHTML=ele.city
+
+           let state=document.createElement("td")
+           state.innerHTML=ele.state
+
+           let more=document.createElement("td")
+           more.innerHTML=`More Details`
+
+           more.onclick=()=>{
+               let id=localStorage.setItem("berweryid",JSON.stringify(ele.id))
+           }
+           tr.append(name,type,city,state,more)
+           tbody.append(tr)
+       });
+    }
+   
+    const show=(value)=>{
+        console.log(value)
+        console.log(arr)
+        let ans=arr.filter((ele)=>{
+            return ele.brewery_type === value
+        })
+        display(ans)
+    }
+</script>
+
